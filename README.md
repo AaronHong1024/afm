@@ -29,6 +29,12 @@ cmake ..
 make
 ./afm -i input_file -w window-size -p modulo -n patterns-number -l patterns-length > output.txt
 ```
+## Docker
+AFM is avaliable on docker:
+```
+docker pull aaronhong1024/afm:v1
+
+```
 
 # Author
 * Aaron Hong
