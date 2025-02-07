@@ -61,7 +61,6 @@ const std::vector<vcfbwt::size_type>& parse)
     auto& phrase = dictionary.sorted_entry_at(parse.back() - 1);
     tmp_input.insert(tmp_input.end(), phrase.begin(), phrase.end()); // for the last phrase we need the last w characters
     tmp_input.push_back(0);
-    
     this->fm_t.construct(tmp_input);
     
     // mark trigger strings positions

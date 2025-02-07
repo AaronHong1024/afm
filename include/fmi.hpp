@@ -12,6 +12,8 @@
 #include <sdsl/io.hpp>
 #include <sdsl/wavelet_trees.hpp>
 #include <spdlog/spdlog.h>
+#include <sdsl/suffix_arrays.hpp>
+#include <sdsl/int_vector.hpp>
 
 #include <wt.hpp>
 
@@ -48,6 +50,7 @@ inline void sacak_templated<uint32_t> (const uint32_t* s, gsacak_long_unsigned* 
     sacak_int((uint32_t*) s, SA, n, k);
 };
 
+
 //------------------------------------------------------------------------------
 
 
@@ -68,12 +71,12 @@ struct interval
     
 };
 
-template<typename data_type, typename wt_type>
+template<typename data_type, typename wt_type, typename sa_type>
 class fmi
 {
 private:
-    
-    sdsl::int_vector<> sa;
+//    sdsl::csa_wt<> sa;
+    sa_type csa;
     wt_type bwt;
     std::vector<fmi_long_signed> C_array;
     
@@ -102,13 +105,14 @@ private:
             else { C_array.at(i) = C_array.at(i - 1); }
         }
     }
-    
+
+
     void init_wt_bwt(const std::vector<data_type>& input)
     {
         spdlog::error("Wavelet Tree constructor not implemented!");
         std::exit(EXIT_FAILURE);
     }
-    
+
     fmi_long_unsigned C_array_at(data_type c) const { return C_array.at(c); }
     data_type bwt_at(fmi_long_unsigned i) const { return bwt[i]; }
     fmi_long_unsigned bwt_rank(fmi_long_unsigned i, data_type c) const { return bwt.rank(i, c); }
@@ -118,26 +122,50 @@ public:
     fmi() = default;
     explicit fmi(const std::vector<data_type>& input) { construct(input); }
     
-    void construct(const std::vector<data_type>& input)
+//    void construct(const std::vector<data_type>& input)
+//    {
+//        assert(input.back() == 0);
+//
+//        // Compute the suffix array
+//        fmi_long_unsigned alphabet_size = (*std::max_element(input.begin(), input.end())) + 1;
+//
+//        spdlog::info("Using 8 bytes for computing SA of the input");
+//        std::vector<fmi_long_unsigned> tmp_sa(input.size(), 0);
+//        sacak_templated<data_type>(&input[0], &tmp_sa[0], input.size(), alphabet_size);
+//
+//        fmi_long_unsigned bytes_sa = 0;
+//        fmi_long_unsigned max_sa = input.size() + 1;
+//        while (max_sa != 0) { max_sa >>= 8; bytes_sa++; }
+//        spdlog::info("Using {} bytes for storing SA of the input", bytes_sa);
+//        sa = sdsl::int_vector<>(tmp_sa.size(), 0ULL, bytes_sa * 8);
+//
+//        for (fmi_long_unsigned i = 0; i < tmp_sa.size(); i++) { sa[i] = tmp_sa[i]; }
+//        tmp_sa.resize(0);
+//
+//        for (size_t i = 0; i < sa.size(); ++i) {
+//            std::cout<<sa[i]<<" ";
+//        }
+//        std::cout<<std::endl;
+//        init_wt_bwt(input);
+//
+//        std::vector<fmi_long_signed> char_counts(alphabet_size, 0);
+//        for(std::size_t i = 0; i < this->bwt.size(); i++) { char_counts.at(this->bwt[i])++; }
+//        init_C_array(char_counts);
+//
+//        FULL_INTERVAL = {(fmi_long_signed)0, (fmi_long_signed)bwt.size()-1};
+//    }
+
+
+    void construct(const std::vector<vcfbwt::char_type>& input)
     {
-        assert(input.back() == 0);
-        
-        // Compute the suffix array
         fmi_long_unsigned alphabet_size = (*std::max_element(input.begin(), input.end())) + 1;
-        
-        spdlog::info("Using 8 bytes for computing SA of the input");
-        std::vector<fmi_long_unsigned> tmp_sa(input.size(), 0);
-        sacak_templated<data_type>(&input[0], &tmp_sa[0], input.size(), alphabet_size);
-        
-        fmi_long_unsigned bytes_sa = 0;
-        fmi_long_unsigned max_sa = input.size() + 1;
-        while (max_sa != 0) { max_sa >>= 8; bytes_sa++; }
-        spdlog::info("Using {} bytes for storing SA of the input", bytes_sa);
-        sa = sdsl::int_vector<>(tmp_sa.size(), 0ULL, bytes_sa * 8);
-        
-        for (fmi_long_unsigned i = 0; i < tmp_sa.size(); i++) { sa[i] = tmp_sa[i]; }
-        tmp_sa.resize(0);
-        
+
+        std::string str(input.begin(),input.end()-1);
+        sdsl::csa_wt<> tmp_csa;
+        sdsl::construct_im(tmp_csa, str, 1);
+        std::cout << "after construct im " << std::endl ;
+        csa = tmp_csa;
+        spdlog::info("before init_wt_bwt");
         init_wt_bwt(input);
 
         std::vector<fmi_long_signed> char_counts(alphabet_size, 0);
@@ -146,7 +174,67 @@ public:
 
         FULL_INTERVAL = {(fmi_long_signed)0, (fmi_long_signed)bwt.size()-1};
     }
-    
+
+    void construct(const std::vector<vcfbwt::size_type>& input)
+    {
+        assert(input.back() == 0);
+
+        // Compute the suffix array
+        fmi_long_unsigned alphabet_size = (*std::max_element(input.begin(), input.end())) + 1;
+
+        spdlog::info("Using 8 bytes for computing SA of the input");
+        std::vector<fmi_long_unsigned> tmp_sa(input.size(), 0);
+        sacak_templated<data_type>(&input[0], &tmp_sa[0], input.size(), alphabet_size);
+
+        fmi_long_unsigned bytes_sa = 0;
+        fmi_long_unsigned max_sa = input.size() + 1;
+        while (max_sa != 0) { max_sa >>= 8; bytes_sa++; }
+        spdlog::info("Using {} bytes for storing SA of the input", bytes_sa);
+        csa = sdsl::int_vector<>(tmp_sa.size(), 0ULL, bytes_sa * 8);
+
+        for (fmi_long_unsigned i = 0; i < tmp_sa.size(); i++) { csa[i] = tmp_sa[i]; }
+        tmp_sa.resize(0);
+
+        init_wt_bwt(input);
+
+        std::vector<fmi_long_signed> char_counts(alphabet_size, 0);
+        for(std::size_t i = 0; i < this->bwt.size(); i++) { char_counts.at(this->bwt[i])++; }
+        init_C_array(char_counts);
+
+        FULL_INTERVAL = {(fmi_long_signed)0, (fmi_long_signed)bwt.size()-1};
+    }
+
+    void serialize_sa(const std::string& filename) const {
+        std::ofstream out(filename, std::ios::binary);
+        if (!out) {
+            throw std::runtime_error("Cannot open file to write sa: " + filename);
+        }
+        csa.serialize(out);
+        out.close();
+    }
+
+    void serialize_bwt(const std::string& filename) const {
+        std::ofstream out(filename, std::ios::binary);
+        if (!out) {
+            throw std::runtime_error("Cannot open file to write bwt: " + filename);
+        }
+        bwt.serialize(out);
+        out.close();
+    }
+
+    void serialize_C_array(const std::string& filename) const {
+        std::ofstream out(filename, std::ios::binary);
+        if (!out) {
+            throw std::runtime_error("Cannot open file to write C_array: " + filename);
+        }
+        size_t C_array_size = C_array.size();
+        out.write(reinterpret_cast<const char*>(&C_array_size), sizeof(C_array_size));
+        for (const auto& element : C_array) {
+            out.write(reinterpret_cast<const char*>(&element), sizeof(element));
+        }
+        out.close();
+    }
+
     interval left_extend(interval I, data_type c) const
     {
         if (I == EMPTY_INTERVAL) { return I; }
@@ -183,32 +271,34 @@ public:
         if (I == EMPTY_INTERVAL) { return out; }
         
         out.resize(I.size(), 0);
-        for (std::size_t i = 0; i < I.size(); i++) { out[i] = sa[I.left + i]; }
+        for (std::size_t i = 0; i < I.size(); i++) { out[i] = csa[I.left + i]; }
         return out;
     }
     
     interval get_full_interval() const { return FULL_INTERVAL; };
     interval get_empty_interval() const { return EMPTY_INTERVAL; };
     fmi_long_unsigned size() const { return bwt.size(); }
-    fmi_long_unsigned SA_at(fmi_long_unsigned i) const { return sa[i]; }
+    fmi_long_unsigned SA_at(fmi_long_unsigned i) const { return csa[i]; }
     
 };
 
 template<>
-inline void fmi<vcfbwt::char_type, sdsl::wt_huff<>>::init_wt_bwt(const std::vector<vcfbwt::char_type>& input)
+inline void fmi<vcfbwt::char_type, sdsl::wt_rlmn<>, sdsl::csa_wt<>>::init_wt_bwt(const std::vector<vcfbwt::char_type>& input)
 {
     spdlog::info("Building Wavelet Tree on chars");
-    std::vector<vcfbwt::char_type> bwt_tmp(sa.size() + 1, 0); // has to be 0 terminated
-    for(fmi_long_signed i = 0; i < sa.size(); i++)
+    std::vector<vcfbwt::char_type> bwt_tmp(csa.size() + 1, 0); // has to be 0 terminated
+    for(fmi_long_signed i = 0; i < csa.size(); i++)
     {
-        if(sa[i] == 0) { bwt_tmp[i] = '$'; }
-        else { bwt_tmp[i] = input[sa[i]-1]; }
+        if(csa[i] == 0) { bwt_tmp[i] = '$'; }
+        else { bwt_tmp[i] = input[csa[i]-1]; }
     }
     construct_im(this->bwt, (const char*)(&bwt_tmp[0]), 1);
+    bwt_tmp.clear();
+    bwt_tmp.shrink_to_fit();
 }
 
 template<>
-inline void fmi<vcfbwt::size_type, pfp_wt_sdsl>::init_wt_bwt(const std::vector<vcfbwt::size_type>& input)
+inline void fmi<vcfbwt::size_type, pfp_wt_sdsl, sdsl::int_vector<>>::init_wt_bwt(const std::vector<vcfbwt::size_type>& input)
 {
     spdlog::info("Building Wavelet Tree on integers");
     // create alphabet (phrases)
@@ -218,13 +308,17 @@ inline void fmi<vcfbwt::size_type, pfp_wt_sdsl>::init_wt_bwt(const std::vector<v
     
     // create BWT and Wavelet Tree over it
     std::vector<vcfbwt::size_type> bwt_tmp(input.size() - 1, 0);
-    for (fmi_long_unsigned i = 1; i < sa.size(); ++i)
+    for (fmi_long_unsigned i = 1; i < csa.size(); ++i)
     {
-        if (sa[i] > 0) { bwt_tmp[i - 1] = input[sa[i] - 1]; }
+        if (csa[i] > 0) { bwt_tmp[i - 1] = input[csa[i] - 1]; }
         else { bwt_tmp[i - 1] = input[input.size() - 2]; }
     }
     this->bwt.construct(alphabet, bwt_tmp);
+    bwt_tmp.clear();
+    bwt_tmp.shrink_to_fit();
 }
+
+
 
 }
 

@@ -87,12 +87,15 @@ int main(int argc, char **argv)
     std::string input_prefix;
     std::size_t n_patterns = 1000;
     std::size_t patterns_size = 500;
+    std::string output_prefix;
     
     app.add_option("-i,--input-prefix", input_prefix, "Input prefix of PFP.")->required();
+    app.add_option("-o,--output-prefix", output_prefix, "Output prefix of PFP.")->required();
     app.add_option("-w, --window-size", params.w, "Sliding window size.")->required()->check(CLI::Range(3, 200));
     app.add_option("-p, --modulo", params.p, "Modulo used during parsing.")->required()->check(CLI::Range(5, 20000));
     app.add_option("-n, --patterns-number", n_patterns, "Number of patterns.");
     app.add_option("-l, --patterns-length", patterns_size, "Length of the patterns.");
+
     CLI11_PARSE(app, argc, argv);
     auto start_time = std::chrono::high_resolution_clock::now();
     // Check all files needed
@@ -105,12 +108,14 @@ int main(int argc, char **argv)
     // Read in parse
     spdlog::info("Reading parse");
     vcfbwt::pfp::ParserUtils<vcfbwt::char_type>::read_parse(p_path, parse);
+    std::cout << "parse size: " << parse.size() << std::endl;
     spdlog::info("after reading Parse Peak RAM: {} Current RAM: {}", malloc_count_peak(), malloc_count_current());
    
     // Read in dictionary
     spdlog::info("Reading dictionary");
     std::vector<std::vector<vcfbwt::char_type>> dictionary_vector;
     vcfbwt::pfp::ParserUtils<vcfbwt::char_type>::read_dictionary(d_path, dictionary_vector);
+    std::cout << "dictionary size: " << dictionary_vector.size() << std::endl;
     spdlog::info("after reading Dict Peak RAM: {} Current RAM: {}:", malloc_count_peak(), malloc_count_current());
 
     for (auto& phrase : dictionary_vector) { dictionary.check_and_add(phrase); }
@@ -152,6 +157,8 @@ int main(int argc, char **argv)
 //    afm::baseline_fmi bfmi;
     afm::accelerated_fmi afmi;
     afmi.construct(params, dictionary, parse);
+    afmi.serialize_fm_t(output_prefix);
+    afmi.serialize_fm_p(output_prefix);
     spdlog::info("after FMindex construction Peak RAM: {} Current RAM:{}:", malloc_count_peak(), malloc_count_current());
     size_t mem_current = malloc_count_peak();
     malloc_count_reset_peak();
@@ -163,7 +170,8 @@ int main(int argc, char **argv)
 
     spdlog::info("Starting Locate Benchmarks");
     start_time = std::chrono::high_resolution_clock::now();
-    for (auto& pattern : queries) { afmi.count(pattern);}
+    for (auto& pattern : queries) {afmi.count(pattern);
+    }
     mem_current = malloc_count_peak();
     spdlog::info("RAM usage for locate: {}", mem_current);
     end_time = std::chrono::high_resolution_clock::now();
