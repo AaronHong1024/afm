@@ -159,6 +159,7 @@ int main(int argc, char **argv)
     afmi.construct(params, dictionary, parse);
     afmi.serialize_fm_t(output_prefix);
     afmi.serialize_fm_p(output_prefix);
+    afmi.serialize_ts_bitvector("ts_bitvector.sdsl");
     spdlog::info("after FMindex construction Peak RAM: {} Current RAM:{}:", malloc_count_peak(), malloc_count_current());
     size_t mem_current = malloc_count_peak();
     malloc_count_reset_peak();
