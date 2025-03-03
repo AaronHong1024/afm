@@ -34,13 +34,26 @@ AFM is avaliable on docker:
 ```
 docker pull aaronhong1024/afm:v1
 ```
-## Benchmark
+# Benchmark
+## Methodology
+Comparison of the construction performance with the construction
+time and memory for all datasets. The number of characters in each dataset
+(denoted as n) is in the second column. The construction time is reported in seconds (denoted as CONSTRUCT TIME). The construction memory is reported
+in gigabytes (denoted as CONSTRUCT MEM). The index size is reported in
+gigabytes (denoted as INDEX SIZE). The implementation of the FM-index that
+we used was sourced from the SDSL library.
+## Specification
+We ran all experiments on a server with AMD EPYC 75F3 CPU with
+Red Hat Enterprise Linux 7.7 (64bit, kernel 3.10.0). The compiler was g++ version
+12.2.0. The running time and memory usage was recorded by Snakemake benchmark
+facility [21]. We set a memory limitation of 128 GB and a time limitation of 24 hours.
+
 | Dataset    | n            | Method        | CONSTRUCT MEMORY | INDEX SIZE | CONSTRUCT TIME |
 |-----------|--------------|--------------|-----------------|------------|----------------|
-| **SARS-25k** | 751,526,774  | RLCSA        | 9.90            | 0.026      | 322.85         |
+| **SARS-25k** | 751,526,774  | RLCSA        | 9.90            | 0.026      | 322.85      |
 |           |              | RLFM         | 3.47            | 0.136      | 363.74         |
 |           |              | FIGISS       | 4.89            | 0.003      | 378.49         |
-|           |              | \ours        | 10.52           | 0.061      | 176.62         |
+|           |              | PFP-FM       | 10.52           | 0.061      | 176.62         |
 |           |              | PFP-FM-CSA   | 15.68           | 1.689      | 772.98         |
 |           |              | FM-index     | 13.35           | 4.399      | 120.08         |
 |           |              | Bowtie       | 3.55            | 0.47       | 7851.35        |
@@ -48,7 +61,7 @@ docker pull aaronhong1024/afm:v1
 | **SARS-50k** | 1,503,252,577 | RLCSA        | 19.88           | 0.051      | 679.89         |
 |           |              | RLFM         | 6.94            | 0.278      | 701.36         |
 |           |              | FIGISS       | 12.44           | 0.006      | 795.70         |
-|           |              | \ours        | 21.03           | 0.12       | 264.84         |
+|           |              | PFP-FM       | 21.03           | 0.12       | 264.84         |
 |           |              | PFP-FM-CSA   | 30.95           | 3.078      | 1546.75        |
 |           |              | FM-index     | 26.12           | 8.490      | 237.50         |
 |           |              | Bowtie       | 7.09            | 0.94       | 28238.74       |
@@ -56,7 +69,7 @@ docker pull aaronhong1024/afm:v1
 | **SARS-100k** | 3,004,588,730 | RLCSA        | 39.47           | 0.099      | 1690.22        |
 |           |              | RLFM         | 25.01           | 0.571      | 1432.16        |
 |           |              | FIGISS       | 25.57           | 0.009      | 1840.80        |
-|           |              | \ours        | 41.97           | 0.173      | 517.78         |
+|           |              | PFP-FM       | 41.97           | 0.173      | 517.78         |
 |           |              | PFP-FM-CSA   | 61.86           | 5.758      | 3150.72        |
 |           |              | FM-index     | 51.85           | 16.73      | 434.55         |
 |           |              | Bowtie       | 14.20           | 1.884      | 32143.48       |
@@ -64,7 +77,7 @@ docker pull aaronhong1024/afm:v1
 | **GRCh38** | 3,189,750,467 | RLCSA        | 45.45           | 2.022      | 924.60         |
 |           |              | RLFM         | 26.31           | 3.101      | 1839.25        |
 |           |              | FIGISS       | 34.65           | 1.538      | 1440.19        |
-|           |              | \ours        | 64.64           | 7.12       | 1341.75        |
+|           |              | PFP-FM       | 64.64           | 7.12       | 1341.75        |
 |           |              | FM-index     | 70.93           | 32.54      | 877.43         |
 |           |              | PFP-FM-CSA   | N/A             | N/A        | N/A            |
 |           |              | Bowtie       | 13.99           | 1.833      | 2160.76        |
