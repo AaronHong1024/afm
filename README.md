@@ -43,7 +43,7 @@ we used was sourced from the SDSL library.
 We ran all experiments on a server with AMD EPYC 75F3 CPU with Red Hat Enterprise Linux 7.7 (64bit, kernel 3.10.0). The code was compiled using g++ version
 12.2.0. We measured running time and memory usage using the Snakemake. We set a memory limitation of 128 GB and a time limitation of 24 hours.
 
-| Dataset    | n            | Method        | CONSTRUCT MEMORY(GB) | INDEX SIZE(GB) | CONSTRUCT TIME |
+| Dataset    | n            | Method        | CONSTRUCT MEMORY (GB)| INDEX SIZE (GB)| CONSTRUCT TIME (s)|
 |-----------|--------------|--------------|-----------------|------------|----------------|
 | **SARS-25k** | 751,526,774  | RLCSA        | 9.90            | 0.026      | 322.85      |
 |           |              | RLFM         | 3.47            | 0.136      | 363.74         |
