@@ -2,7 +2,7 @@
 
 # Accelerated FM-index
 
-FM-indexes are a crucial data structure in DNA alignment, but searching with them usually takes at least one random access per character in the query pattern.  Ferragina and Fischer observed in 2007 that word-based indexes often use fewer random accesses than character-based indexes, and thus support faster searches.  Since DNA lacks natural word-boundaries, however, it is necessary to parse it somehow before applying word-based FM-indexing.  Last year, Deng et al. proposed parsing genomic data by induced suffix sorting, and showed the resulting word-based FM-indexes support faster counting queries than standard FM-indexes when patterns are a few thousand characters or longer.  In this paper we show that using prefix-free parsing---which takes parameters that let us tune the average length of the phrases—instead of induced suffix sorting, gives a significant speedup for patterns of only a few hundred characters.  We implement our method and demonstrate it is between 3 and 18 times faster than competing methods on queries to GRCh38.  And was consistently faster on queries made to 25,000, 50,000 and 100,000 SARS-CoV-2 genomes. Hence, it is very clear that our method accelerates the performance of count over all state-of-the-art methods with a minor increase in the memory.
+FM-indexes are a crucial data structure in DNA alignment, but searching with them usually takes at least one random access per character in the query pattern.  Ferragina and Fischer observed in 2007 that word-based indexes often use fewer random accesses than character-based indexes and thus support faster searches.  Since DNA lacks natural word boundaries, however, it is necessary to parse it somehow before applying word-based FM indexing.  Last year, Deng et al. proposed parsing genomic data by induced suffix sorting and showed the resulting word-based FM-indexes support faster counting queries than standard FM-indexes when patterns are a few thousand characters or longer.  In this paper we show that using prefix-free parsing---which takes parameters that let us tune the average length of the phrases—instead of induced suffix sorting, gives a significant speedup for patterns of only a few hundred characters.  We implement our method and demonstrate it is between 3 and 18 times faster than competing methods on queries to GRCh38.  And it was consistently faster on queries made to 25,000, 50,000, and 100,000 SARS-CoV-2 genomes. Hence, it is very clear that our method accelerates the performance of count over all state-of-the-art methods with a minor increase in the memory.
 
 If you use the AFM in your research, please cite: (https://arxiv.org/abs/2305.05893)
 
@@ -19,7 +19,7 @@ singularity pull pfp_sif docker://moliva3/pfp:latest
 For more details, please refer to the PFP GitHub page.
 
 ## Build the AFM
-Then we can build the afm by running the following commands:
+Then, we can build the afm by running the following commands:
 ```
 git clone https://github.com/marco-oliva/afm.git
 cd afm
@@ -30,25 +30,20 @@ make
 ./afm -i input_file -w window-size -p modulo -n patterns-number -l patterns-length > output.txt
 ```
 ## Docker
-AFM is avaliable on docker:
+AFM is available on docker:
 ```
 docker pull aaronhong1024/afm:v1
 ```
 # Benchmark
 ## Methodology
-Comparison of the construction performance with the construction
-time and memory for all datasets. The number of characters in each dataset
-(denoted as n) is in the second column. The construction time is reported in seconds (denoted as CONSTRUCT TIME). The construction memory is reported
-in gigabytes (denoted as CONSTRUCT MEM). The index size is reported in
-gigabytes (denoted as INDEX SIZE). The implementation of the FM-index that
+Comparison of the construction performance with the construction time (in seconds), memory usage (in gigabytes), and index size (in gigabytes)
+for all datasets. The number of characters in each dataset (denoted as n) is in the second column. The implementation of the FM-index that
 we used was sourced from the SDSL library.
 ## Specification
-We ran all experiments on a server with AMD EPYC 75F3 CPU with
-Red Hat Enterprise Linux 7.7 (64bit, kernel 3.10.0). The compiler was g++ version
-12.2.0. The running time and memory usage was recorded by Snakemake benchmark
-facility [21]. We set a memory limitation of 128 GB and a time limitation of 24 hours.
+We ran all experiments on a server with AMD EPYC 75F3 CPU with Red Hat Enterprise Linux 7.7 (64bit, kernel 3.10.0). The code was compiled using g++ version
+12.2.0. We measured running time and memory usage using the Snakemake. We set a memory limitation of 128 GB and a time limitation of 24 hours.
 
-| Dataset    | n            | Method        | CONSTRUCT MEMORY | INDEX SIZE | CONSTRUCT TIME |
+| Dataset    | n            | Method        | CONSTRUCT MEMORY(GB) | INDEX SIZE(GB) | CONSTRUCT TIME |
 |-----------|--------------|--------------|-----------------|------------|----------------|
 | **SARS-25k** | 751,526,774  | RLCSA        | 9.90            | 0.026      | 322.85      |
 |           |              | RLFM         | 3.47            | 0.136      | 363.74         |
