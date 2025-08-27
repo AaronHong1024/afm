@@ -2,6 +2,8 @@
 //  fmi.hpp
 //  Heavily inspired by https://github.com/jnalanko/syotti/blob/master/src/FM_index.hh
 //
+// Copyright (c) Boucher Lab. All rights reserved.
+// Licensed under the GNU license. See the LICENSE file in the repository root for full license information.
 
 #ifndef fmi_hpp
 #define fmi_hpp
