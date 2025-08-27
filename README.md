@@ -20,19 +20,19 @@ We use the PFP implementation from the Boucher Lab:  [PFP](https://github.com/ma
 singularity pull pfp_sif docker://moliva3/pfp:latest
 ./pfp_sif pfp++ --help
 
-## Build the AFM
-Then, we can build the afm by running the following commands:
+## Build the AFM (PFP-FM)
+
 ```
 git clone https://github.com/marco-oliva/afm.git
 cd afm
-mkdir build
-cd build
+mkdir build && cd build
 cmake ..
 make
 ./afm -i input_file -w window-size -p modulo -n patterns-number -l patterns-length > output.txt
 ```
+
 ## Docker
-AFM is available on docker:
+PFP-FM is also available via Docker:
 ```
 docker pull aaronhong1024/afm:v1
 ```
