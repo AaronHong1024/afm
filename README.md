@@ -19,6 +19,7 @@ We use the PFP implementation from the Boucher Lab:  [PFP](https://github.com/ma
 ```bash
 singularity pull pfp_sif docker://moliva3/pfp:latest
 ./pfp_sif pfp++ --help
+```
 
 ## Build the AFM (PFP-FM)
 
