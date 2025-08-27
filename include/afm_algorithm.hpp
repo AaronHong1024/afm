@@ -1,6 +1,8 @@
 //
 //  afm_algorithm.hpp
 //
+// Copyright (c) Boucher Lab. All rights reserved.
+// Licensed under the GNU license. See the LICENSE file in the repository root for full license information.
 
 #ifndef afm_algorith_hpp
 #define afm_algorith_hpp
