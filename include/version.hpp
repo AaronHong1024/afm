@@ -1,6 +1,8 @@
 //
 //  version.hpp.in
 //
+// Copyright (c) Boucher Lab. All rights reserved.
+// Licensed under the GNU license. See the LICENSE file in the repository root for full license information.
 
 #ifndef version_hpp
 #define version_hpp
