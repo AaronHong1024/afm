@@ -1,6 +1,8 @@
 //
 //  parser.hpp
 //
+// Copyright (c) Boucher Lab. All rights reserved.
+// Licensed under the GNU license. See the LICENSE file in the repository root for full license information.
 
 #ifndef parser_hpp
 #define parser_hpp
