@@ -81,14 +81,9 @@ We ran all experiments on a server with AMD EPYC 75F3 CPU with Red Hat Enterpris
 |           |              | Bowtie       | 13.99           | 1.833      | 2160.76        |
 |           |              | Bowtie2      | 14.00           | 2.31       | 2170.32        |
 
+## Citation
 
-# Author
-* Aaron Hong
-* Marco Oliva
-* Dominik Köppl
-* Hideo Bannai
-* Christina Boucher
-* Travis Gagie
+If you use **PFP-FM** in your research, please cite:
 
-# Reference
-[1] Boucher, C., Gagie, T., Kuhnle, A. et al. Prefix-free parsing for building big BWTs. Algorithms Mol Biol 14, 13 (2019). https://doi.org/10.1186/s13015-019-0148-5
+> Aaron Hong, Marco Oliva, Dominik Köppl, Hideo Bannai, Christina Boucher, and Travis Gagie. Acceleration of FM-Index Queries Through Prefix-Free Parsing. In 23rd International Workshop on Algorithms in Bioinformatics (WABI 2023). Leibniz International Proceedings in Informatics (LIPIcs), Volume 273, pp. 13:1-13:16, Schloss Dagstuhl – Leibniz-Zentrum für Informatik (2023) https://doi.org/10.4230/LIPIcs.WABI.2023.13
+
