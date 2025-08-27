@@ -14,7 +14,7 @@ On datasets such as **GRCh38** and collections of **25k–100k SARS-CoV-2 genome
 ## Usage
 
 ### 1. Build the PFP
-We use the PFP implementation from the Boucher Lab:  [PFP](https://github.com/marco-oliva/pfp)
+We use the [PFP implementation](https://github.com/marco-oliva/pfp) from the Boucher Lab
 
 ```bash
 singularity pull pfp_sif docker://moliva3/pfp:latest
