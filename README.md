@@ -1,13 +1,10 @@
 [![Release](https://img.shields.io/github/v/release/marco-oliva/afm?include_prereleases)](https://github.com/marco-oliva/afm/releases/tag/1.0.0)
 
 # Accelerated FM-Index (PFP-FM)
+[Acceleration of FM-Index Queries Through Prefix-Free Parsing](https://drops.dagstuhl.de/entities/document/10.4230/LIPIcs.WABI.2023.13)
 
-This repository contains an implementation of **PFP-FM**, a method for accelerating FM-index queries using **Prefix-Free Parsing (PFP)**.  
-FM-indexes are central to DNA alignment, but typically require at least one random access per character in the query pattern.  
-By applying **word-based indexing through PFP**, we significantly reduce the number of random accesses and speed up query performance.
+PFP-FM accelerates FM-index queries by using Prefix-Free Parsing to index phrases instead of characters, cutting random accesses. On GRCh38 and 25k–100k SARS-CoV-2 datasets, it delivers 2×–25× faster counts for 125–1000 bp patterns with only modest memory overhead.
 
-Compared to previous grammar-based approaches (e.g., FIGISS), PFP-FM achieves speedups even for **shorter patterns (125–1000 bp)**, which are highly relevant in genomics.  
-On datasets such as **GRCh38** and collections of **25k–100k SARS-CoV-2 genomes**, PFP-FM is consistently **2×–25× faster** than state-of-the-art methods, with only a modest increase in memory usage.
 
 ---
 
