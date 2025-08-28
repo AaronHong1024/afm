@@ -10,7 +10,7 @@ PFP-FM accelerates FM-index queries by using Prefix-Free Parsing to index phrase
 
 ## Usage
 
-### 1. Build the PFP
+### Build the PFP
 We use the [PFP implementation](https://github.com/marco-oliva/pfp) from the Boucher Lab
 
 ```bash
@@ -18,7 +18,7 @@ singularity pull pfp_sif docker://moliva3/pfp:latest
 ./pfp_sif pfp++ --help
 ```
 
-## Build the AFM (PFP-FM)
+### Build the AFM (PFP-FM)
 
 ```
 git clone https://github.com/marco-oliva/afm.git
@@ -28,8 +28,18 @@ cmake ..
 make
 ./afm -i input_file -w window-size -p modulo -n patterns-number -l patterns-length > output.txt
 ```
+### PFP-FM options
+```
+| Flag | Meaning | Type / Range (as implemented) |
+|---|---|---|
+| `-i` | Input file path | path |
+| `-w` | Window size | integer `[3 - 200]` | 
+| `-p` | Modulo | integer `[5 - 20000]` | 
+| `-n` | Number of select patterns | integer `>0` |
+| `-l` | Pattern length | integer `>0` | 
+```
 
-## Docker
+### Docker
 PFP-FM is also available via Docker:
 ```
 docker pull aaronhong1024/afm:v1
