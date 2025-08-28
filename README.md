@@ -1,6 +1,6 @@
-[![Release](https://img.shields.io/github/v/release/marco-oliva/afm?include_prereleases)](https://github.com/marco-oliva/afm/releases/tag/1.0.0)
 
-# Accelerated FM-Index (PFP-FM)
+
+# Accelerated FM-Index (PFP-FM) [![Release](https://img.shields.io/github/v/release/marco-oliva/afm?include_prereleases)](https://github.com/marco-oliva/afm/releases/tag/1.0.0)
 [Acceleration of FM-Index Queries Through Prefix-Free Parsing](https://drops.dagstuhl.de/entities/document/10.4230/LIPIcs.WABI.2023.13)
 
 PFP-FM accelerates FM-index queries by using Prefix-Free Parsing to index phrases instead of characters, cutting random accesses. On GRCh38 and 25k–100k SARS-CoV-2 datasets, it delivers 2×–25× faster counts for 125–1000 bp patterns with only modest memory overhead.
