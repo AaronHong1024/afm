@@ -29,7 +29,7 @@ make
 ./afm -i input_file -w window-size -p modulo -n patterns-number -l patterns-length > output.txt
 ```
 ### PFP-FM options
-```
+
 | Flag | Meaning | Type / Range (as implemented) |
 |---|---|---|
 | `-i` | Input file path | path |
@@ -37,7 +37,7 @@ make
 | `-p` | Modulo | integer `[5 - 20000]` | 
 | `-n` | Number of select patterns | integer `>0` |
 | `-l` | Pattern length | integer `>0` | 
-```
+
 
 ### Docker
 PFP-FM is also available via Docker:
