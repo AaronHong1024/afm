@@ -28,7 +28,7 @@ cmake ..
 make
 ./afm -i input_file -w window-size -p modulo -n patterns-number -l patterns-length > output.txt
 ```
-### PFP-FM options
+### AFM (PFP-FM) options
 
 | Flag | Meaning | Type / Range (as implemented) |
 |---|---|---|
